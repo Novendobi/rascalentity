@@ -13,7 +13,6 @@ data AType
 data IdRole 
 	    = attributeId()
 	    | entityId()
-		| reprId()
         ;
 str prettyType(integer()) = "integer";
 str prettyType(string()) = "string";
@@ -85,5 +84,5 @@ void collect(current:(Types) `<Id name>`, Collector c){
 void collect(
 	current: (Repr) `repr <Id rname>`, Collector c
 ){
-	c.use(rname, {reprId()});
+	c.use(rname, {attributeId()});
 }

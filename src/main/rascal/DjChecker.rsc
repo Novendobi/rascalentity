@@ -14,9 +14,9 @@ data IdRole
 	    | entityId()
         | methodId()
         ;
-str prettyType(charfield(name)) = "CharField";
-str prettyType(foreignkey(name)) = "ForeignKey";
-str prettyType(entityType(name)) = "entity";
+str prettyType(charfield(name)) = "CharField(<name>)";
+str prettyType(foreignkey(name)) = "ForeignKey(<name>)";
+str prettyType(entityType(name)) = "entity(<name>)";
 
 default tuple[list[str] typeNames, set[IdRole] idRoles] getTypeNamesAndRole(AType t){
     return <[], {}>;
