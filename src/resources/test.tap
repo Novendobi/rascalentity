@@ -1,0 +1,16 @@
+module crm
+
+entity Customer
+    name        : string
+    description : string
+    website     : string
+    repr name
+end
+
+entity Contact
+    name        : string
+    phone       : string
+    email       : string
+    customer -> Customer
+    repr name
+end
