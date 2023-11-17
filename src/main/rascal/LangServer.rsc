@@ -1,27 +1,41 @@
 module LangServer
 
-import util::LanguageServer;
-import util::IDEServices;
+import Syntax;
 import ParseTree;
 import util::Reflective;
-import Syntax;
-import Checker;
+import util::LanguageServer;
 import TestChecker;
+import Message;
+import Prelude;
 import IO;
+extend analysis::typepal::TypePal;
 
-set[LanguageService] entityLanguageContributor() = {
-    parser(parser(#start[Program]))
+set[LanguageService] testCont() = {
+    parser(parser(#start[Program])),
+    summarizer(testSummarizer, providesImplementations = false)
 };
 
-int main() {
-    registerLanguage(
-        language(
-            pathConfig(srcs=[|project://entitytask/src/main/rascal|]),
-            "Entity Lang", // name of the language
-            "test", //extension
-            "LangServer", // module to import
-            "entityLanguageContributor"
-        )
+Summary testSummarizer(loc l, start[Program] input) {
+    pt = parse(#start[Program], l).top;
+    TModel model = syntaxTModelFromTree(input);
+
+    // iprintToFile(|project://rascal-yaml/src/resources/mod.yml|, model);
+    definitions = model.definitions;
+    Summary val =  summary(l,
+        messages = {<message.at, message> | message <- model.messages},
+        references = {<definition, definitions[definition].defined> | definition <- definitions}
     );
-    return 0;
+    println(val);
+    return val;
+}
+
+void main() {
+  registerLanguage(
+    language(
+    pathConfig(srcs = [|std:///|, |project://entitytask/src/main/rascal|]),
+    "Entity Lang", 
+    "test", 
+    "LangServer",
+    "testCont"
+    ));
 }
